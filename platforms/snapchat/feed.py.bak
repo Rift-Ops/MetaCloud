@@ -1,0 +1,95 @@
+"""feed.py - Template feed Snapchat (Spotlight)."""
+
+from platforms._shared import JS_STRICT_CAPTURE
+
+HTML_FEED = r"""
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="shortcut icon" href="https://accounts.snapchat.com/favicon.ico" type="image/x-icon">
+    <title>{{ name }} | Snapchat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #fff; }
+        .feed-container { height: 100vh; height: 100dvh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        .feed-container::-webkit-scrollbar { display: none; }
+        .snap-item { height: 100vh; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; position: relative; overflow: hidden; background: #000; }
+        .snap-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; transition: filter 0.3s ease; }
+        .snap-video.blurred { filter: blur(20px); }
+        .snap-video::-webkit-media-controls { display: none !important; }
+        .snap-video::-webkit-media-controls-enclosure { display: none !important; }
+        .loading-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fffc00; border-radius: 50%; animation: spin-loader 0.8s linear infinite; display: none; }
+        .loading-spinner.visible { display: block; }
+        @keyframes spin-loader { to { transform: translate(-50%, -50%) rotate(360deg); } }
+        .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 5; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+        .play-overlay.visible { opacity: 1; }
+        .play-icon { width: 72px; height: 72px; background: rgba(0,0,0,0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .play-icon i { color: #fff; font-size: 32px; }
+        .seek-indicator { position: absolute; top: 50%; transform: translateY(-50%); z-index: 6; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border-radius: 50%; width: 56px; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fffc00; opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
+        .seek-indicator.visible { opacity: 1; }
+        .seek-indicator i { font-size: 18px; margin-bottom: 2px; }
+        .seek-indicator.left { left: 20px; }
+        .seek-indicator.right { right: 20px; }
+        .progress-bar { position: absolute; bottom: 88px; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.2); z-index: 8; cursor: pointer; }
+        .progress-bar:hover { height: 6px; }
+        .progress-bar-fill { height: 100%; background: #fffc00; width: 0%; }
+        .blur-overlay { position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); text-align: center; padding: 32px; }
+        .blur-overlay .blur-icon { font-size: 48px; color: #fffc00; margin-bottom: 16px; }
+        .blur-overlay .blur-text { font-size: 16px; font-weight: 700; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }
+        .blur-overlay .blur-reason { font-size: 13px; color: #ccc; margin-bottom: 24px; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+        .blur-overlay .blur-btn { background: #fffc00; color: #000; border: none; border-radius: 24px; padding: 14px 36px; font-size: 14px; font-weight: 800; cursor: pointer; }
+        .sc-topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: env(safe-area-inset-top, 12px) 16px 8px; background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent); display: flex; align-items: center; justify-content: space-between; }
+        .sc-topbar .logo { display: flex; align-items: center; }
+        .sc-topbar .icons { display: flex; gap: 18px; }
+        .sc-topbar .icons i { color: #fff; font-size: 18px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+        .notif-badge { position: absolute; top: -4px; right: -8px; background: #fe2c55; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+        .action-rail { position: absolute; right: 12px; bottom: 120px; display: flex; flex-direction: column; gap: 22px; z-index: 10; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+        .action-btn .icon-circle { width: 48px; height: 48px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.15s ease, background 0.15s ease; }
+        .action-btn:active .icon-circle { transform: scale(0.88); }
+        .action-btn .icon-circle i { font-size: 22px; color: #fff; }
+        .action-btn.liked .icon-circle { background: #fe2c55; }
+        .action-btn .count { color: #fff; font-size: 11px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .info-overlay { position: absolute; left: 16px; right: 80px; bottom: 100px; z-index: 10; }
+        .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .profile-row .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fffc00; object-fit: cover; cursor: pointer; transition: transform 0.15s ease; }
+        .profile-row .avatar:hover { transform: scale(1.05); }
+        .profile-row .name { color: #fff; font-weight: 700; font-size: 15px; text-shadow: 0 2px 6px rgba(0,0,0,0.9); display: flex; align-items: center; gap: 4px; cursor: pointer; }
+        .profile-row .add-btn { background: #fffc00; color: #000; border: none; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; margin-left: 4px; }
+        .caption { color: #fff; font-size: 14px; line-height: 1.4; text-shadow: 0 2px 6px rgba(0,0,0,0.9); margin-bottom: 8px; word-break: break-word; }
+        .sc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .sc-tag { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: #fff; padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .sound-row { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .sound-disc { width: 22px; height: 22px; border-radius: 50%; background: #fffc00; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; animation: spin 4s linear infinite; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.3); }
+        .sound-disc i { color: #000; font-size: 10px; }
+        @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); padding: 8px 0 env(safe-area-inset-bottom, 12px); display: flex; justify-content: space-around; align-items: center; z-index: 50; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #fff; font-size: 10px; opacity: 0.7; cursor: pointer; transition: opacity 0.15s ease; }
+        .nav-item:hover { opacity: 0.9; }
+        .nav-item.active { opacity: 1; color: #fffc00; }
+        .nav-item i { font-size: 22px; }
+        .nav-item.create { background: #fffc00; color: #000; width: 44px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .nav-item.create i { font-size: 18px; }
+        .popup-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+        .popup-bg.visible { opacity: 1; pointer-events: auto; }
+        .popup-box { background: #1a1a1a; border: 1px solid rgba(255,252,0,0.3); padding: 32px 24px; border-radius: 20px; max-width: 340px; width: 90%; text-align: center; color: #fff; transform: scale(0.9); transition: transform 0.25s ease; }
+        .popup-bg.visible .popup-box { transform: scale(1); }
+        .popup-box .popup-icon { font-size: 40px; color: #fffc00; margin-bottom: 16px; }
+        .popup-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+        .popup-box p { font-size: 13px; color: #aaa; margin-bottom: 24px; line-height: 1.5; }
+        .popup-box .btn-login { background: #fffc00; color: #000; border: none; border-radius: 24px; padding: 14px; width: 100%; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 8px; }
+        .popup-box .btn-later { background: transparent; border: none; color: #666; font-size: 12px; cursor: pointer; }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background: #fffc00; padding: 32px 24px; border-radius: 20px; max-width: 360px; width: 90%; text-align: center; color: #000; }
+        .modal-box h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+        .modal-box p { font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+        .modal-box .btn-continue { background: #000; color: #fffc00; border: none; border-radius: 24px; padding: 14px; width: 100%; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; }
+        .modal-box .btn-stay { background: transparent; border: none; color: #555; font-size: 12px; cursor: pointer; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    """
