@@ -1,0 +1,4 @@
+werkzeug
+requests
+PyQt6
+flask
