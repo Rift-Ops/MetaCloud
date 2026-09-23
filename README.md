@@ -74,8 +74,9 @@ git clone https://github.com/Rift-Ops/MetaCloud.git
 cd MetaCloud
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+pip install --upgrade pip
+pip install -r requirements.txt
+python Release.py
 ```
 
 Avant toute exécution, inspectez le code, désactivez tout accès à des services réels et utilisez uniquement des données fictives. Ne lancez jamais le projet sur un réseau ou un domaine qui ne vous appartient pas ou pour lequel vous ne disposez pas d’une autorisation écrite.
