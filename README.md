@@ -32,10 +32,7 @@ git clone https://github.com/Rift-Ops/MetaCloud.git && python -m venv venv && py
 
 Bien, voici une bref vidéo de présentation de l'interface de l'outil:
 
-<video controls width="800">
-  <source src="https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2018-29-15.mp4" type="video/mp4">
-  Votre navigateur ne prend pas en charge la lecture vidéo.
-</video>
+https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2018-29-15.mp4
 
 Voici un exemple de capture des identifiants d'un compte **Facebook** avec l'outil:
 
