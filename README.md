@@ -16,6 +16,7 @@ C'est un outil de phishing très sophistiqué qui permet d'avoir/ de capturer le
 | Google             | 40/100 (l'interface n'est pas encore terminée)                                                                                   | 4/10        |
 | Snapchat           | 80/100 (tout dépend de comment vous allez pprocéder )                                                                            | 10/10       |
 | Tiktok             | 70/100 (ça dépend de la manière dont vous allez mettre les vidéos et de la manière dont les tentatives de capture seront faites) | 10/10       |
+
 Pour les plateformes supportées, on a:
 
 | Systèmes | Compatibilité |
