@@ -38,10 +38,7 @@ Voici un exemple de capture des identifiants d'un compte **Facebook** avec l'out
 
 **NB**: Je suis en local ici et c'est moi qui manipule le téléphone, donc j'ai le droit de faire ce que je veux, merci bien :)
 
-<video controls width="800">
-  <source src="https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2019-02-25.mp4" type="video/mp4">
-  Votre navigateur ne prend pas en charge la lecture vidéo.
-</video>
+https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2019-02-25.mp4
 
 **NB**: Je suis ouvert à der personnes qui vont vouloir contribuer à ce projet avec moi pour pouvoir implémenter d'autres améliorer et bien sûr corriger les bugs... :)
 
