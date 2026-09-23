@@ -32,13 +32,13 @@ git clone https://github.com/Rift-Ops/MetaCloud.git && python -m venv venv && py
 
 Bien, voici une bref vidéo de présentation de l'interface de l'outil:
 
-![[2026-09-23 18-29-15.mp4]]
+[▶️ Regarder la vidéo de présentation de l'interface](https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2018-29-15.mp4)
 
 Voici un exemple de capture des identifiants d'un compte **Facebook** avec l'outil:
 
 **NB**: Je suis en local ici et c'est moi qui manipule le téléphone, donc j'ai le droit de faire ce que je veux, merci bien :)
 
-![[2026-09-23 19-02-25.mp4]]
+[▶️ Regarder la démonstration Facebook](https://github.com/Rift-Ops/MetaCloud/raw/main/2026-09-23%2019-02-25.mp4)
 
 **NB**: Je suis ouvert à der personnes qui vont vouloir contribuer à ce projet avec moi pour pouvoir implémenter d'autres améliorer et bien sûr corriger les bugs... :)
 
