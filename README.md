@@ -70,6 +70,7 @@ Ces vidéos ne constituent pas une autorisation d’utiliser le projet sur des s
 L’installation ne doit être réalisée que dans un environnement isolé et dédié à la recherche. Utilisez une version prise en charge de Python, puis créez un environnement virtuel :
 
 ```bash
+sudo apt update && sudo apt upgrade -y
 git clone https://github.com/Rift-Ops/MetaCloud.git
 cd MetaCloud
 python3 -m venv .venv
